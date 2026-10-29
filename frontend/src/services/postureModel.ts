@@ -146,27 +146,29 @@ export async function predictPosture(
     outputs = await model.run([input]);
     const output = outputs[0];
     if (!output) throw new Error('The TFLite model returned no output tensor.');
-const values = Array.from(await output.data(), Number);
-
-if (values.length !== 1 && values.length !== 2) {
-  throw new Error(
-    `Expected one probability or two class probabilities; received ${values.length} values.`
-  );
-}
-
-if (values.some((value) => !Number.isFinite(value))) {
-  throw new Error('The model output contained a non-finite number.');
-}
-
-// One output = probability_correct.
-// Two outputs = [probability_incorrect, probability_correct].
-const probability = values.length === 2 ? values[1] : values[0];
-
-if (probability < 0 || probability > 1) {
-  throw new Error(
-    `Expected a probability between 0 and 1; received ${probability}.`
-  );
-} finally {
+    const values = Array.from(await output.data(), Number);
+    
+    if (values.length !== 1 && values.length !== 2) {
+      throw new Error(
+        `Expected one probability or two class probabilities; received ${values.length} values.`
+      );
+    }
+    
+    if (values.some((value) => !Number.isFinite(value))) {
+      throw new Error('The model output contained a non-finite number.');
+    }
+    
+    // One output = probability_correct.
+    // Two outputs = [probability_incorrect, probability_correct].
+    const probability = values.length === 2 ? values[1] : values[0];
+    
+    if (probability < 0 || probability > 1) {
+      throw new Error(
+        `Expected a probability between 0 and 1; received ${probability}.`
+      );
+    } 
+  }
+    finally {
     input.delete();
     outputs.forEach((output) => output.delete());
   }
