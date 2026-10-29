@@ -42,7 +42,12 @@ export async function loadPostureModel(): Promise<BrowserLiteRtModel> {
         return response.json() as Promise<ModelContract>;
       })
       .then((contract) => {
-        if (contract.input_features !== 132 || contract.landmark_count !== 33) {
+        if (
+          contract.input_features !== 132 ||
+          contract.landmark_count !== 33 ||
+          !Array.isArray(contract.values_per_landmark) ||
+          contract.values_per_landmark.length !== 4
+        ) {
           throw new Error('The labels file does not match the expected 33-landmark / 132-feature contract.');
         }
         if (contract.probability_output !== 'probability_correct') {
