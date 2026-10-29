@@ -5,9 +5,8 @@
 
 *A student-built AI project exploring real-time sitting-posture awareness using MediaPipe Pose and TensorFlow Lite.*
 
-<!-- Replace the placeholder below once the Render deployment is live. -->
 
-[![Live Demo](https://img.shields.io/badge/https://ergovision-ai-alnj.onrender.com/-7C3AED?style=for-the-badge&logo=render&logoColor=white)](#-live-demo)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-ErgoVision-7C3AED?style=for-the-badge&logo=render&logoColor=white)](https://ergovision-ai-alnj.onrender.com/)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-Pose-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://developers.google.com/mediapipe)
 [![TensorFlow Lite](https://img.shields.io/badge/TensorFlow_Lite-On--device_AI-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/lite)
 [![CBSE AI](https://img.shields.io/badge/CBSE-AI_417-0F766E?style=for-the-badge)](#-academic-project)
@@ -174,10 +173,8 @@ The interface is designed around a single task: start a session, view the detect
 
 ### Try ErgoVision in your browser
 
-**🌐 Render URL:** `ADD_YOUR_RENDER_URL_HERE`
+**🌐 Render URL:** (https://ergovision-ai-alnj.onrender.com/)
 
-<!-- After deployment, replace the placeholder above with your public Render URL.
-     Suggested format: https://your-service-name.onrender.com -->
 
 </div>
 
@@ -194,9 +191,8 @@ The interface is designed around a single task: start a session, view the detect
 ### Setup
 
 ```bash
-# Replace YOUR_USERNAME and YOUR_REPOSITORY with your GitHub details.
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-cd YOUR_REPOSITORY
+git clone https://github.com/Nightmare-De9/ergo-vision-ai.git
+cd ergo-vision-ai
 npm install
 npm run dev
 ```
@@ -241,11 +237,11 @@ The practical lesson is that an AI prediction should be interpreted alongside it
 
 <div align="center">
 
-| Team member | Project team |
-|---|---|
-| **Prasidhi Pandey** | ErgoVision project team |
-| **Bharti Kumar** | ErgoVision project team |
-| **Vishwajith S** | ErgoVision project team |
+| Team member |
+|---|
+| **Prasidhi Pandey** |
+| **Bharti Kumar** |
+| **Vishwajith S** |
 
 </div>
 
