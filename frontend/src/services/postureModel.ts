@@ -75,12 +75,23 @@ export async function loadPostureModel(): Promise<BrowserLiteRtModel> {
         model.delete();
         throw new Error(`Expected one TFLite input tensor; found ${inputs.length}.`);
       }
+
       const shape = inputs[0].shape ?? [];
-      const elements = shape.reduce((product, dimension) => product * dimension, 1);
-      if (elements !== 132) {
+      
+      const validInputShape =
+        (shape.length === 1 && shape[0] === 132) ||
+        (shape.length === 2 &&
+          (shape[0] === -1 || shape[0] === 1) &&
+          shape[1] === 132);
+      
+      if (!validInputShape) {
         model.delete();
-        throw new Error(`The TFLite model input shape is [${shape.join(', ')}], not 132 features.`);
+        throw new Error(
+          `Unsupported TFLite input shape [${shape.join(', ')}]. ` +
+          'Expected [132], [1, 132], or [-1, 132].'
+        );
       }
+
       const inputDtype = inputs[0].dtype?.toLowerCase();
       if (inputDtype && !inputDtype.includes('float32')) {
         model.delete();
