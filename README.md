@@ -7,7 +7,7 @@
 
 <!-- Replace the placeholder below once the Render deployment is live. -->
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Add_Render_Link-7C3AED?style=for-the-badge&logo=render&logoColor=white)](#-live-demo)
+[![Live Demo](https://img.shields.io/badge/https://ergovision-ai-alnj.onrender.com/-7C3AED?style=for-the-badge&logo=render&logoColor=white)](#-live-demo)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-Pose-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://developers.google.com/mediapipe)
 [![TensorFlow Lite](https://img.shields.io/badge/TensorFlow_Lite-On--device_AI-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/lite)
 [![CBSE AI](https://img.shields.io/badge/CBSE-AI_417-0F766E?style=for-the-badge)](#-academic-project)
