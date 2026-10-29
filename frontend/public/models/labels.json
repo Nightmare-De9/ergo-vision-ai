@@ -11,5 +11,5 @@
   ],
   "probability_output": "probability_correct",
   "decision_threshold": 0.5,
-  "preprocessing": "Use landmarks_to_features() from this notebook or the accompanying webcam script."
+  "preprocessing": "Use landmarks_to_features() from the notebook."
 }
