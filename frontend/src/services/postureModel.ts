@@ -166,9 +166,15 @@ export async function predictPosture(
       throw new Error(
         `Expected a probability between 0 and 1; received ${probability}.`
       );
-    } 
-  }
-    finally {
+    }
+
+    const probabilityCorrect = clamp(probability, 0, 1);
+    return {
+      probabilityCorrect,
+      probabilityIncorrect: 1 - probabilityCorrect,
+      label: probabilityCorrect >= clamp(threshold, 0, 1) ? 'correct' : 'incorrect',
+    };
+  } finally {
     input.delete();
     outputs.forEach((output) => output.delete());
   }
