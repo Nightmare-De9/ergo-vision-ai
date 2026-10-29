@@ -66,9 +66,9 @@ export function drawPose(
   const offsetX = (width - sourceWidth * coverScale) / 2;
   const offsetY = (height - sourceHeight * coverScale) / 2;
   const point = (index: number) => ({
-    x: landmarks[index].x * sourceWidth * coverScale + offsetX,
-    y: landmarks[index].y * sourceHeight * coverScale + offsetY,
-    visibility: landmarks[index].visibility ?? landmarks[index].presence ?? 0,
+    x: landmarks[index]?.x * sourceWidth * coverScale + offsetX,
+    y: landmarks[index]?.y * sourceHeight * coverScale + offsetY,
+    visibility: landmarks[index]?.visibility ?? landmarks[index]?.presence ?? 0,
   });
   const lineColour = highlighted ? 'rgba(241, 182, 111, 0.95)' : 'rgba(193, 232, 211, 0.9)';
 
@@ -78,6 +78,7 @@ export function drawPose(
   for (const [from, to] of POSE_CONNECTIONS) {
     const a = point(from);
     const b = point(to);
+    if (!Number.isFinite(a.x) || !Number.isFinite(a.y) || !Number.isFinite(b.x) || !Number.isFinite(b.y)) continue;
     if (a.visibility < 0.25 || b.visibility < 0.25) continue;
     context.beginPath();
     context.moveTo(a.x, a.y);
@@ -88,6 +89,7 @@ export function drawPose(
 
   for (let index = 0; index < landmarks.length; index += 1) {
     const p = point(index);
+    if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) continue;
     if (p.visibility < 0.25) continue;
     context.beginPath();
     context.arc(p.x, p.y, index === 11 || index === 12 || index === 23 || index === 24 ? 3.2 : 2.1, 0, Math.PI * 2);

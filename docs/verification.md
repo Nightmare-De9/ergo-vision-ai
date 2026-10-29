@@ -2,7 +2,7 @@
 
 This record is intentionally conservative. The application source, feature-contract tests, and uploaded TFLite asset are present in this repository. Actual webcam inference must be exercised in a modern browser with network access and camera permission.
 
-The assembly environment's `npm install` timed out while retrieving packages, so the full Vite build and an actual webcam/TFLite inference session could not be run here. The independent landmark utility passes a standalone strict TypeScript compile. This is not a substitute for the runtime checks below.
+The automated checks below pass in the repository after installing the declared dependencies. A browser smoke check also confirmed that the app loads without console errors before camera permission is requested. This is not a substitute for a live webcam/TFLite inference session.
 
 Checks intended for the project:
 
@@ -12,7 +12,13 @@ npm run typecheck
 npm run build
 ```
 
-Known unverified items until those commands and a live browser session are run:
+Latest local results:
+
+- `npm test` — 5 tests passed.
+- `npm run typecheck` — passed.
+- `npm run build` — passed.
+
+Known unverified items until a live browser session with camera permission is run:
 
 - Compatibility of the supplied TFLite file with the LiteRT.js WASM runtime in the target browser.
 - Its exact tensor dtype, input tensor shape, and output layout.

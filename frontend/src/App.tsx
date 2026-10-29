@@ -154,6 +154,10 @@ function App() {
         },
         audio: false,
       });
+      if (generationRef.current !== attemptId) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
+      }
       streamRef.current = stream;
       const video = videoRef.current;
       if (!video) throw new Error('The camera preview could not be mounted.');
@@ -186,45 +190,50 @@ function App() {
             setPhase('error');
             return;
           }
-          setPoseFound(Boolean(landmarks?.length));
+          setPoseFound(landmarks?.length === 33);
 
-          if (landmarks?.length) {
+          if (landmarks?.length === 33) {
             const recentSample = sampleRef.current[sampleRef.current.length - 1];
             drawPose(canvas, liveVideo, landmarks, recentSample?.label === 'incorrect');
             if (now - lastInferenceRef.current >= INFERENCE_INTERVAL_MS && !inferenceBusyRef.current) {
               lastInferenceRef.current = now;
               inferenceBusyRef.current = true;
               const frameGeneration = attemptId;
-              const features = landmarksToFeatures(landmarks);
-              void (async () => {
-                try {
-                  const nextPrediction = await predictPosture(postureModel, features, thresholdRef.current);
-                  if (!runningRef.current || generationRef.current !== frameGeneration) return;
-                  const sample: Sample = {
-                    time: Date.now() - (sessionStartRef.current ?? Date.now()),
-                    probabilityCorrect: nextPrediction.probabilityCorrect,
-                    label: nextPrediction.label,
-                  };
-                  sampleRef.current = [...sampleRef.current, sample].slice(-2400);
-                  totalSamplesRef.current += 1;
-                  setPrediction(nextPrediction);
-                  setClassifiedSamples(totalSamplesRef.current);
-                  if (nextPrediction.label === 'correct') {
-                    correctCountRef.current += 1;
-                    badSinceRef.current = null;
-                    setNudge(false);
-                  } else {
-                    if (badSinceRef.current === null) badSinceRef.current = performance.now();
-                    if (performance.now() - badSinceRef.current >= NUDGE_AFTER_MS) setNudge(true);
+              try {
+                const features = landmarksToFeatures(landmarks);
+                void (async () => {
+                  try {
+                    const nextPrediction = await predictPosture(postureModel, features, thresholdRef.current);
+                    if (!runningRef.current || generationRef.current !== frameGeneration) return;
+                    const sample: Sample = {
+                      time: Date.now() - (sessionStartRef.current ?? Date.now()),
+                      probabilityCorrect: nextPrediction.probabilityCorrect,
+                      label: nextPrediction.label,
+                    };
+                    sampleRef.current = [...sampleRef.current, sample].slice(-2400);
+                    totalSamplesRef.current += 1;
+                    setPrediction(nextPrediction);
+                    setClassifiedSamples(totalSamplesRef.current);
+                    if (nextPrediction.label === 'correct') {
+                      correctCountRef.current += 1;
+                      badSinceRef.current = null;
+                      setNudge(false);
+                    } else {
+                      if (badSinceRef.current === null) badSinceRef.current = performance.now();
+                      if (performance.now() - badSinceRef.current >= NUDGE_AFTER_MS) setNudge(true);
+                    }
+                    setCorrectSamples(correctCountRef.current);
+                    setHistory(sampleRef.current.slice(-48));
+                  } catch (modelError) {
+                    if (runningRef.current && generationRef.current === frameGeneration) setErrorMessage(modelError instanceof Error ? modelError.message : 'The classifier could not read this pose.');
+                  } finally {
+                    if (generationRef.current === frameGeneration) inferenceBusyRef.current = false;
                   }
-                  setCorrectSamples(correctCountRef.current);
-                  setHistory(sampleRef.current.slice(-48));
-                } catch (modelError) {
-                  if (runningRef.current && generationRef.current === frameGeneration) setErrorMessage(modelError instanceof Error ? modelError.message : 'The classifier could not read this pose.');
-                } finally {
-                  if (generationRef.current === frameGeneration) inferenceBusyRef.current = false;
-                }
-              })();
+                })();
+              } catch (featureError) {
+                inferenceBusyRef.current = false;
+                setErrorMessage(featureError instanceof Error ? featureError.message : 'The detected pose could not be converted into model features.');
+              }
             }
           } else {
             drawPose(canvas, liveVideo, undefined);
@@ -280,8 +289,9 @@ function App() {
     const anchor = document.createElement('a');
     anchor.href = url;
     anchor.download = `ergovision-session-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.rel = 'noopener';
     anchor.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   }, [classifiedSamples, correctSamples, elapsedSeconds, percentCorrect, threshold]);
 
   const formatDuration = (seconds: number) => {

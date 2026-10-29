@@ -15,6 +15,11 @@ export function landmarksToFeatures(landmarks: PoseLandmark[]): number[] {
   if (landmarks.length !== 33) {
     throw new Error(`Expected 33 pose landmarks; received ${landmarks.length}.`);
   }
+  for (const [index, point] of landmarks.entries()) {
+    if (![point.x, point.y, point.z].every(Number.isFinite)) {
+      throw new Error(`Landmark ${index} contains a non-finite coordinate.`);
+    }
+  }
   const leftHip = landmarks[23];
   const rightHip = landmarks[24];
   const hipX = (leftHip.x + rightHip.x) / 2;
@@ -24,9 +29,9 @@ export function landmarksToFeatures(landmarks: PoseLandmark[]): number[] {
   const features: number[] = [];
   for (const point of landmarks) {
     features.push(
-      finiteOrZero(point.x - hipX),
-      finiteOrZero(point.y - hipY),
-      finiteOrZero(point.z - hipZ),
+      point.x - hipX,
+      point.y - hipY,
+      point.z - hipZ,
       finiteOrZero(point.visibility ?? 0),
     );
   }

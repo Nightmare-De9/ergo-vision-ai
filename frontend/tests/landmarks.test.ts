@@ -39,4 +39,10 @@ describe('landmarksToFeatures', () => {
   it('rejects a landmark list that is not 33 points', () => {
     expect(() => landmarksToFeatures(makeLandmarks().slice(1))).toThrow(/Expected 33/);
   });
+
+  it('rejects non-finite landmark coordinates instead of hiding invalid input', () => {
+    const landmarks = makeLandmarks();
+    landmarks[4].x = Number.NaN;
+    expect(() => landmarksToFeatures(landmarks)).toThrow(/non-finite coordinate/);
+  });
 });
