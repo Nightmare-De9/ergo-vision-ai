@@ -1,0 +1,15 @@
+{
+  "0": "incorrect",
+  "1": "correct",
+  "input_features": 132,
+  "landmark_count": 33,
+  "values_per_landmark": [
+    "x_normalized_relative_to_hip",
+    "y_normalized_relative_to_hip",
+    "z_normalized_relative_to_hip",
+    "visibility"
+  ],
+  "probability_output": "probability_correct",
+  "decision_threshold": 0.5,
+  "preprocessing": "Use landmarks_to_features() from this notebook or the accompanying webcam script."
+}
