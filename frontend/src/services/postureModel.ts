@@ -103,10 +103,22 @@ export async function loadPostureModel(): Promise<BrowserLiteRtModel> {
         throw new Error(`Expected one TFLite output tensor; found ${outputs.length}.`);
       }
       const outputShape = outputs[0].shape ?? [];
-      const outputElements = outputShape.reduce((product, dimension) => product * dimension, 1);
-      if (outputElements !== 1 && outputElements !== 2) {
+      
+      // -1 is a dynamic batch dimension in TFLite.
+      const validOutputShape =
+        outputShape.length === 0 ||
+        (outputShape.length === 1 &&
+          (outputShape[0] === 1 || outputShape[0] === 2)) ||
+        (outputShape.length === 2 &&
+          (outputShape[0] === -1 || outputShape[0] === 1) &&
+          (outputShape[1] === 1 || outputShape[1] === 2));
+      
+      if (!validOutputShape) {
         model.delete();
-        throw new Error(`The TFLite output shape [${outputShape.join(', ')}] is not a scalar probability or two-class probability vector.`);
+        throw new Error(
+          `Unsupported TFLite output shape [${outputShape.join(', ')}]. ` +
+          'Expected a scalar, [1], [2], [1, 1], [1, 2], [-1, 1], or [-1, 2].'
+        );
       }
       const outputDtype = outputs[0].dtype?.toLowerCase();
       if (outputDtype && !outputDtype.includes('float32')) {
